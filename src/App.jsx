@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage.jsx";
+import HomePage from "./pages/HomePage";
 import { ContextProvider } from "./contexts/Context";
-import SignUpPage from "./pages/SignupPage.jsx";
-import SignInPage from "./pages/SignInPage.jsx";
-import PorosPage from "./pages/PorosPage.jsx";
+import SignUpPage from "./pages/SignupPage";
+import SignInPage from "./pages/SignInPage";
+import PorosPage from "./pages/PorosPage";
 
 export default function App() {
   return (
