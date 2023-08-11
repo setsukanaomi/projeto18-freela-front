@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/Homepage";
+import HomePage from "./pages/Homepage.jsx";
 import { ContextProvider } from "./contexts/Context";
 import SignUpPage from "./pages/SignupPage.jsx";
 import SignInPage from "./pages/SignInPage.jsx";
