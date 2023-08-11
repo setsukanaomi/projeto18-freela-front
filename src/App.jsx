@@ -3,6 +3,7 @@ import HomePage from "./pages/Homepage";
 import { ContextProvider } from "./contexts/Context";
 import SignUpPage from "./pages/SignupPage.jsx";
 import SignInPage from "./pages/SignInPage.jsx";
+import PorosPage from "./pages/PorosPage.jsx";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
+          <Route path="/poros" element={<PorosPage />} />
         </Routes>
       </BrowserRouter>
     </ContextProvider>

@@ -1,17 +1,36 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import axios from "axios";
+import { Context } from "../contexts/Context";
 
 export default function SignInPage() {
+  const { setToken } = useContext(Context);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
 
-  function Register(event) {
+  function Login(event) {
     event.preventDefault();
+    const data = {
+      email,
+      password,
+    };
+
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/signin`, data)
+      .then((res) => {
+        navigate("/poros");
+        setToken(res.data.token);
+        alert("Yey! Now, lets find your new friend!");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error.response.data.message);
+      });
   }
 
   return (
@@ -43,10 +62,11 @@ export default function SignInPage() {
           </RegisterNow>
         </LogoDiv>
 
-        <Form onSubmit={Register}>
+        <Form onSubmit={Login}>
           <InputsContainer>
             <h2>EMAIL</h2>
             <input
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
@@ -57,6 +77,7 @@ export default function SignInPage() {
           <InputsContainer>
             <h2>PASSWORD</h2>
             <input
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
@@ -69,6 +90,10 @@ export default function SignInPage() {
 
         <StyledLink to="/signup">
           Don't have an account? Register now!
+        </StyledLink>
+
+        <StyledLink to="/poros">
+          Just wanna see our collection of poros? Click here!
         </StyledLink>
       </Overlay>
     </SignUpContainer>
@@ -87,6 +112,12 @@ const StyledLink = styled(Link)`
   font-family: "Mulish", sans-serif;
   text-decoration: none;
   font-weight: 500;
+  &:hover {
+    background-color: #fff;
+    border-radius: 2px;
+    color: #000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const LogoDiv = styled.div`

@@ -1,13 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
 import { useContext, useState } from "react";
 import { Context } from "../contexts/Context.jsx";
+import axios from "axios";
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
   const { name, setName } = useContext(Context);
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
+  const [telephone, setTelephone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -18,6 +21,26 @@ export default function SignUpPage() {
       alert("As senhas não são iguais!");
       return;
     }
+
+    const data = {
+      name,
+      cpf,
+      email,
+      telephone,
+      password,
+      confirmPassword,
+    };
+
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/signup`, data)
+      .then(() => {
+        navigate("/");
+        alert("Registered! You can now sign in.");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error.response.data.message);
+      });
   }
 
   return (
@@ -52,6 +75,7 @@ export default function SignUpPage() {
           <InputsContainer>
             <h2>NAME</h2>
             <input
+              required
               value={name}
               onChange={(e) => setName(e.target.value)}
               type="text"
@@ -61,6 +85,7 @@ export default function SignUpPage() {
             <h2>CPF</h2>
             <input
               value={cpf}
+              required
               onChange={(e) => setCpf(e.target.value)}
               type="cpf"
               maxLength={11}
@@ -71,6 +96,7 @@ export default function SignUpPage() {
             <h2>EMAIL</h2>
             <input
               value={email}
+              required
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               autoComplete="on"
@@ -79,9 +105,11 @@ export default function SignUpPage() {
           <InputsContainer>
             <h2>TELEPHONE</h2>
             <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
+              value={telephone}
+              required
+              onChange={(e) => setTelephone(e.target.value)}
+              type="telephone"
+              maxLength={11}
               autoComplete="on"
             />
           </InputsContainer>
@@ -89,6 +117,7 @@ export default function SignUpPage() {
             <h2>PASSWORD</h2>
             <input
               value={password}
+              required
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               autoComplete="new-password"
@@ -97,6 +126,7 @@ export default function SignUpPage() {
           <InputsContainer>
             <h2>CONFIRM PASSWORD</h2>
             <input
+              required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               type="password"
@@ -107,6 +137,9 @@ export default function SignUpPage() {
         </Form>
 
         <StyledLink to="/signin">Already registered? Sign in!</StyledLink>
+        <StyledLink to="/poros">
+          Just wanna see our collection of poros? Click here!
+        </StyledLink>
       </Overlay>
     </SignUpContainer>
   );
@@ -147,7 +180,7 @@ const Form = styled.form`
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
   input {
     text-align: center;
     width: 300px;
@@ -185,7 +218,7 @@ const SignUpContainer = styled.section`
 
 const Overlay = styled.div`
   display: flex;
-  gap: 35px;
+  gap: 20px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
