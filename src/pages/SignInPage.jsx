@@ -23,9 +23,10 @@ export default function SignInPage() {
     axios
       .post(`${import.meta.env.VITE_API_URL}/signin`, data)
       .then((res) => {
-        navigate("/poros");
+        localStorage.setItem("token", res.data.token);
         setToken(res.data.token);
         alert("Yey! Now, lets find your new friend!");
+        navigate("/poros");
       })
       .catch((error) => {
         console.log(error);

@@ -1,8 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
+import { useContext, useEffect } from "react";
+import { Context } from "../contexts/Context";
 
 export default function HomePage() {
+  const { setToken } = useContext(Context);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+      navigate("/poros");
+    }
+  }, [navigate, setToken]);
+
   return (
     <div
       style={{

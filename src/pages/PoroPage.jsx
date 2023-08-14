@@ -1,20 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import { Context } from "../contexts/Context";
+import { useEffect, useState } from "react";
 
-export default function PorosPage() {
-  const { poros, setPoros } = useContext(Context);
+export default function PoroPage() {
+  const { id } = useParams();
+  const [poro, setPoro] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/poros`)
+      .get(`${import.meta.env.VITE_API_URL}/poros/${id}`)
       .then((answer) => {
-        setPoros(answer.data);
+        console.log(answer);
+        setPoro(answer.data);
       })
       .catch((error) => {
         alert(error.message);
@@ -25,11 +26,6 @@ export default function PorosPage() {
       setAuthenticated(true);
     }
   }, []);
-
-  const handleLogOff = () => {
-    localStorage.removeItem("token");
-    setAuthenticated(false);
-  };
 
   return (
     <div>
@@ -57,31 +53,35 @@ export default function PorosPage() {
             <ImgLogo src={Logo} alt="Get Poros logo." />
             <Button to="/">WELCOME</Button>
             <Button to="/signup">SIGN UP</Button>
-            {authenticated ? (
-              <Button to="#" onClick={handleLogOff}>
-                LOG OFF
-              </Button>
-            ) : (
-              <Button to="/signin">SIGN IN</Button>
-            )}
+            <Button to="/signin">
+              {authenticated ? "LOG OFF" : "SIGN IN"}
+            </Button>
             <Button disabled>POROS</Button>
             <Button>POROS ALREADY TRAVELING</Button>
           </SideBar>
           <PorosDiv>
             <h1>
-              Our collection of <strong>poros</strong> just for{" "}
-              <strong>you</strong>!
+              Such a cute<strong> little poro</strong> just for{" "}
+              <strong>you!</strong>!
             </h1>
             <Underline />
             <PorosList>
-              {poros.map((poro, id) => (
-                <StyledLink to={`/poros/${id + 1}`} key={id}>
-                  <Poro>
-                    <img src={poro.picture} alt={poro.name} />
-                    <h2>{poro.name}</h2>
-                  </Poro>
-                </StyledLink>
-              ))}
+              <Poro>
+                <img src={poro.picture} alt={poro.name} />
+                <h2>{poro.name}</h2>
+                <br />
+                <h2>{poro.description}</h2>
+                <br />
+                <h2>His owner is:</h2>
+                <h2>{poro.owner}</h2>
+                <h2>{poro.email}</h2>
+                <h2>{poro.telephone}</h2>
+                <br />
+                <h2>
+                  Get in contact with him/her right now so you can get this
+                  poro!
+                </h2>
+              </Poro>
             </PorosList>
           </PorosDiv>
         </Overlay>
@@ -89,11 +89,9 @@ export default function PorosPage() {
     </div>
   );
 }
-const StyledLink = styled(Link)`
-  text-decoration: none;
-`;
+
 const PorosContainer = styled.section`
-  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -114,16 +112,13 @@ const ImgLogo = styled.img`
 `;
 
 const Poro = styled.div`
-  cursor: pointer;
-  width: 350px;
-  height: 300px;
   gap: 3px;
+  margin: auto;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
   align-items: center;
-  margin-top: 20px;
+  justify-content: center;
   img {
     width: 295px;
     border-radius: 30px;
@@ -163,9 +158,11 @@ const SideBar = styled.div`
 `;
 
 const PorosDiv = styled.div`
-  margin-top: 60px;
-  height: 850px;
-  overflow: scroll;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   h1 {
     font-size: 35px;
     font-weight: 200;
