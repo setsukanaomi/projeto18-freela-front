@@ -5,6 +5,7 @@ import SignUpPage from "../src/pages/SignUpPage";
 import SignInPage from "../src/pages/SignInPage";
 import PorosPage from "../src/pages/PorosPage";
 import PoroPage from "./pages/PoroPage";
+import MyPorosPage from "./pages/MyPorosPage";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/poros" element={<PorosPage />} />
           <Route path="/poros/:id" element={<PoroPage />} />
+          <Route path="/my/poros" element={<MyPorosPage />} />
         </Routes>
       </BrowserRouter>
     </ContextProvider>

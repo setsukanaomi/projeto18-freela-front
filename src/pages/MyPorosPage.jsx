@@ -1,29 +1,41 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../contexts/Context";
 
-export default function PorosPage() {
-  const { poros, setPoros } = useContext(Context);
+export default function MyPorosPage() {
+  const { poros, setPoros, setToken, token } = useContext(Context);
+  const navigate = useNavigate();
+
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
+    const localToken = localStorage.getItem("token");
+    if (localToken) {
+      setAuthenticated(true);
+      setToken(localToken);
+    } else {
+      navigate("/poros");
+    }
+
+    const authorization = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
     axios
-      .get(`${import.meta.env.VITE_API_URL}/poros`)
+      .get(`http://localhost:5000/my/poros`, authorization)
       .then((answer) => {
+        console.log(answer);
         setPoros(answer.data);
       })
       .catch((error) => {
         alert(error.message);
       });
-
-    const token = localStorage.getItem("token");
-    if (token) {
-      setAuthenticated(true);
-    }
   }, []);
 
   const handleLogOff = () => {
@@ -57,34 +69,34 @@ export default function PorosPage() {
             <ImgLogo src={Logo} alt="Get Poros logo." />
             <Button to="/">WELCOME</Button>
             {authenticated ? (
-              <Button to="/my/poros">MY POROS</Button>
+              <Button disabled to="#">
+                MY POROS
+              </Button>
             ) : (
               <Button to="/signup">SIGN UP</Button>
             )}
             {authenticated ? (
-              <Button to="#" onClick={handleLogOff}>
+              <Button to="/poros" onClick={handleLogOff}>
                 LOG OFF
               </Button>
             ) : (
               <Button to="/signin">SIGN IN</Button>
             )}
-            <Button disabled>POROS</Button>
+            <Button to="/poros">POROS</Button>
             <Button>POROS ALREADY TRAVELING</Button>
           </SideBar>
           <PorosDiv>
             <h1>
-              Our collection of <strong>poros</strong> just for{" "}
-              <strong>you</strong>!
+              Your collection of <strong>poros!</strong>
             </h1>
             <Underline />
             <PorosList>
               {poros.map((poro, id) => (
-                <StyledLink to={`/poros/${id + 1}`} key={id}>
-                  <Poro>
-                    <img src={poro.picture} alt={poro.name} />
-                    <h2>{poro.name}</h2>
-                  </Poro>
-                </StyledLink>
+                <Poro key={id}>
+                  <img src={poro.picture} alt={poro.name} />
+                  <h2>{poro.name}</h2>{" "}
+                  <h3>{poro.available ? "Disable" : "Enable"}</h3>
+                </Poro>
               ))}
             </PorosList>
           </PorosDiv>
@@ -93,9 +105,7 @@ export default function PorosPage() {
     </div>
   );
 }
-const StyledLink = styled(Link)`
-  text-decoration: none;
-`;
+
 const PorosContainer = styled.section`
   width: 100%;
   display: flex;
@@ -118,7 +128,6 @@ const ImgLogo = styled.img`
 `;
 
 const Poro = styled.div`
-  cursor: pointer;
   width: 350px;
   height: 300px;
   gap: 3px;
@@ -136,6 +145,9 @@ const Poro = styled.div`
   h2 {
     font-size: 22px;
     text-align: center;
+  }
+  h3 {
+    cursor: pointer;
   }
 `;
 
