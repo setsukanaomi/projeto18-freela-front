@@ -28,7 +28,7 @@ export default function MyPorosPage() {
     };
 
     axios
-      .get(`http://localhost:5000/my/poros`, authorization)
+      .get(`${import.meta.env.VITE_API_URL}/my/poros`, authorization)
       .then((answer) => {
         console.log(answer);
         setPoros(answer.data);
